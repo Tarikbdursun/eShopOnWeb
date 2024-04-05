@@ -2,6 +2,7 @@
 @attribute [Authorize(Roles = BlazorShared.Authorization.Constants.Roles.ADMINISTRATORS)]
 @inherits BlazorAdmin.Helpers.BlazorComponent
 @namespace BlazorAdmin.Pages.CatalogItemPage
+@using BlazorAdmin.Services.OrderDetailsServices
 
 <PageTitle>eShopOnWeb Admin: Manage Product Catalog</PageTitle>
 
@@ -65,3 +66,20 @@ else
     <Create Brands="@catalogBrands" Types="@catalogTypes" OnSaveClick="ReloadCatalogItems" @ref="CreateComponent"></Create>
     <Delete Brands="@catalogBrands" Types="@catalogTypes" OnSaveClick="ReloadCatalogItems" @ref="DeleteComponent"></Delete>
 }
+
+<a href="/admin/orderdetails">Order Details</a>
+
+<button class="btn btn-primary" @onclick="ShowAllOrderDetails">Show All Orders</button>
+
+
+@code
+{
+    private async void ShowAllOrderDetails()
+    {
+        
+    }
+}
+
+
+
+
