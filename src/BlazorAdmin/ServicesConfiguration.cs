@@ -1,4 +1,5 @@
 ﻿using BlazorAdmin.Services;
+using BlazorAdmin.Services.OrderDetailsServices;
 using BlazorShared.Interfaces;
 using BlazorShared.Models;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,6 +16,7 @@ public static class ServicesConfiguration
         services.AddScoped<CatalogLookupDataService<CatalogType, CatalogTypeResponse>>();
         services.AddScoped<ICatalogItemService, CachedCatalogItemServiceDecorator>();
         services.AddScoped<CatalogItemService>();
+        services.AddScoped<IOrderDetailsService, OrderDetailsService>();
 
         return services;
     }

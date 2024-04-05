@@ -17,12 +17,12 @@ public class OrderDetails
 
     public string BuyerId { get; set; }
 
-    [Required(ErrorMessage = "The Name field is required")]
-    public string BuyerName { get; set; }
+    //[Required(ErrorMessage = "The Name field is required")]
+    //public string BuyerName { get; set; }
 
     [Required(ErrorMessage = "The Address field is required")]
     public string Address { get; set; }
-    public DateTime OrderDate { get; set; }
+    public DateTimeOffset OrderDate { get; set; }
     public List<OrderItem> Items { get; set; }
 
     [RegularExpression(@"^\d+(\.\d{0,2})*$", ErrorMessage = "The field Price must be a positive number with maximum two decimals.")]
