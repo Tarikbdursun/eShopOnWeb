@@ -1,0 +1,40 @@
+﻿@page "/order-details/{orderId}"
+
+@attribute [Authorize(Roles = BlazorShared.Authorization.Constants.Roles.ADMINISTRATORS)]
+@inherits BlazorAdmin.Helpers.BlazorComponent
+
+<PageTitle>eShopOnWeb Admin: Order Details</PageTitle>
+
+@namespace BlazorAdmin.Pages.OrdersPage
+<h3>Order Details</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Product Name</th>
+            <th>Units</th>
+            <th>Unit Price</th>
+            <th>Total Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in OrderItems)
+        {
+            <tr>
+                <td><img src="@item.CatalogItemOrderedPicUri" alt="@item.CatalogItemOrderedName" /></td>
+                <td>@item.CatalogItemOrderedName</td>
+                <td>@item.Units</td>
+                <td>@item.UnitPrice</td>
+                <td>@item.TotalPrice</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<button class="btn btn-primary" @onclick="ApproveOrder">Approve Order</button>
+
+
+@code {
+
+}

@@ -11,8 +11,6 @@ using Microsoft.eShopWeb.ApplicationCore.Entities.OrderAggregate;
 namespace BlazorShared.Models.OrderDetailsModels;
 public class OrderDetails
 {
-    public int Id { get; set; }
-
     public int OrderId { get; set; }
 
     public string BuyerId { get; set; }
@@ -30,5 +28,5 @@ public class OrderDetails
     [DataType(DataType.Currency)]
     public decimal TotalPrice { get; set; }
 
-    public string Status { get; set; } = "Pending";
+    public short Status { get; set; }
 }

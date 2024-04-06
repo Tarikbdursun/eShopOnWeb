@@ -17,30 +17,24 @@ namespace BlazorAdmin.Services.OrderDetailsServices;
 public class OrderDetailsService : IOrderDetailsService
 {
     private readonly HttpService _httpService;
-    private readonly ILogger<CatalogItemService> _logger;
-    private readonly IRepository<Order> _orderRepository;
-    private readonly IRepository<Microsoft.eShopWeb.ApplicationCore.Entities.OrderDetails> _orderDetailsRepository;
+    private readonly IRepository<Order> _orderRepository; 
 
     public OrderDetailsService(
-        HttpService httpService, 
-        ILogger<CatalogItemService> logger, 
-        IRepository<Microsoft.eShopWeb.ApplicationCore.Entities.OrderDetails> orderDetailsRepository, 
+        HttpService httpService,
         IRepository<Order> orderRepository)
     {
         _httpService = httpService;
-        _logger = logger;
-        _orderDetailsRepository = orderDetailsRepository;
         _orderRepository = orderRepository;
     }
+
+
+
 
     public async Task<OrderDetails> GetByOrderIdAsync(int orderId) 
     {
         var getOrderTask= _orderRepository.GetByIdAsync(orderId);
         
         await Task.WhenAll(getOrderTask);
-
-        //
-        //_orderDetailsRepository.FirstOrDefaultAsync(x => x.OrderId == orderId);
         
          OrderDetails orderDetails = new OrderDetails
         {
@@ -54,7 +48,7 @@ public class OrderDetailsService : IOrderDetailsService
             $"{getOrderTask.Result.ShipToAddress.ZipCode}",
             OrderDate = getOrderTask.Result.OrderDate,
             Items = getOrderTask.Result.OrderItems.ToList(),
-            Status = "Pending",
+            Status = 0,
             TotalPrice = getOrderTask.Result.Total()
         };
         
@@ -63,7 +57,7 @@ public class OrderDetailsService : IOrderDetailsService
 
     //
     public async Task<OrderDetails> Create(CreateOrderDetailsRequest orderDetails)
-    {   
+    {
         var response = await _httpService.HttpPost<CreateOrderDetailsResponse>("order-details", orderDetails);
         return response?.OrderDetails;
     }
@@ -89,19 +83,52 @@ public class OrderDetailsService : IOrderDetailsService
 
     public async Task<List<OrderDetails>> List()
     {
-        _logger.LogInformation("Fetching order details from API.");
+        var orders = (await _orderRepository.ListAsync()).OrderBy(x=>x.Id);
 
-        var detailsListTask = _httpService.HttpGet<PagedOrderDetailsResponse>($"order-details");
-        await Task.WhenAll(detailsListTask);
+        List<OrderDetails> orderDetails = new List<OrderDetails>();
+        foreach (var order in orders)   
+        {
+            orderDetails.Add(new OrderDetails
+            {
+                OrderId = order.Id,
+                BuyerId = order.BuyerId,
+                Address = 
+                    $"{order.ShipToAddress.Street} " +
+                    $"{order.ShipToAddress.City} " +
+                    $"{order.ShipToAddress.State} " +
+                    $"{order.ShipToAddress.Country} " +
+                    $"{order.ShipToAddress.ZipCode}",
+                OrderDate = order.OrderDate,
+                Items = order.OrderItems.ToList(),
+                Status = (short)order.Status,
+                TotalPrice = order.Total()
+            });
+        }
+        
+        return orderDetails;
+    }
 
-        var details = detailsListTask.Result.OrderDetails;
-        return details;
+    public async Task<List<OrderDetailsModel>> ListDetails(int orderId) 
+    {
+        var itemOrders = (await _orderRepository.GetByIdAsync(orderId)).OrderItems;
+        
+
+        List<OrderDetailsModel> orderDetails = new List<OrderDetailsModel>();
+        foreach (var item in itemOrders)
+        {
+            orderDetails.Add(new OrderDetailsModel
+            {
+                CatalogItemOrdered=item.ItemOrdered,
+                UnitPrice=item.UnitPrice,
+                Units=item.Units,
+            });
+        }
+
+        return orderDetails.ToList();
     }
 
     public async Task<List<OrderDetails>> ListPaged(int pageSize)
     {
-        _logger.LogInformation("Fetching order details from API.");
-
         var detailsListTask = _httpService.HttpGet<PagedOrderDetailsResponse>($"order-details?PageSize=10");
         await Task.WhenAll(detailsListTask);
 

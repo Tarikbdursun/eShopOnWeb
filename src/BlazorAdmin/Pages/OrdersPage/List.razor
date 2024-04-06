@@ -4,13 +4,11 @@
 
 @inherits BlazorAdmin.Helpers.BlazorComponent
 
-@namespace BlazorAdmin.Pages.OrderDetailsPage
-@using BlazorShared.Models.OrderDetailsModels
+@namespace BlazorAdmin.Pages.OrdersPage
 
 <PageTitle>eShopOnWeb Admin: Order Details</PageTitle>
 
 <h1>Order Details</h1>
-<button class="btn btn-primary" @onclick="ShowAllOrderDetails">Show All Orders</button>
 
 @if (orderDetails != null && orderDetails.Any())
 {
@@ -38,6 +36,9 @@
                             {
                                 <li>@product.ItemOrdered.ProductName - @product.UnitPrice</li>
                             }
+                    <td>
+                        <a href="/order-details/@orderDetail.OrderId">Order Details</a>
+                    </td>
                         </ul>
                     </td>
                 </tr>
@@ -48,40 +49,4 @@
 else
 {
     <p>No order details found.</p>
-}
-
-@code {
-    private List<OrderDetails> orderDetails;
-
-    private void ShowAllOrderDetails()
-    {
-        // Burada orderDetails listesini doldurmanız gerekecek.
-        // Örneğin, bir servisten veri çekerek orderDetails listesini doldurabilirsiniz.
-        orderDetails = new List<OrderDetails>
-        {
-            new OrderDetails
-            {
-                Id=1,
-                BuyerId="2345677655",
-                OrderId=1,
-                // BuyerName="Ali",
-                OrderDate=DateTime.Today,
-                Address="Ankara",
-                Status="Pending"
-            },
-            new OrderDetails
-            {
-                Id=2,
-                BuyerId="2345677656",
-                OrderId=2,
-                // BuyerName="Veli",
-                OrderDate=DateTime.Today,
-                Address="Bolu",
-                Status="Pending"
-            }
-        };
-    }
-
-    // OrderDetail sınıfının tanımı buraya eklenecek.
-    // Eğer orderDetails listesini doldurmak için bir servis kullanıyorsanız, bu sınıfı servis tarafında tanımlamanız gerekecek.
 }

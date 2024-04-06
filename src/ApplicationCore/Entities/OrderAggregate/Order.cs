@@ -23,6 +23,8 @@ public class Order : BaseEntity, IAggregateRoot
     public DateTimeOffset OrderDate { get; private set; } = DateTimeOffset.Now;
     public Address ShipToAddress { get; private set; }
 
+    public OrderStatus Status { get; set; }
+
     // DDD Patterns comment
     // Using a private collection field, better for DDD Aggregate's encapsulation
     // so OrderItems cannot be added from "outside the AggregateRoot" directly to the collection,
@@ -44,4 +46,9 @@ public class Order : BaseEntity, IAggregateRoot
         }
         return total;
     }
+}
+public enum OrderStatus
+{
+    Pending = 0,
+    Approved = 1
 }

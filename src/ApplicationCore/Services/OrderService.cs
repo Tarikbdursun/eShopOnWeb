@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.eShopWeb.ApplicationCore.Entities;
@@ -51,8 +52,9 @@ public class OrderService : IOrderService
         await _orderRepository.AddAsync(order);
     }
 
-    public Task SetOrderStatus() 
+    public async Task SetOrderStatus(int orderId,short status) 
     {
-        return null;
+        var getOrderTask = await _orderRepository.GetByIdAsync(orderId);
+        getOrderTask.Status = (OrderStatus)status;
     }
 }
