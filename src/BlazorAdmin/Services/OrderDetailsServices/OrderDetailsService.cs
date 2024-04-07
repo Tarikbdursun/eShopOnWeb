@@ -16,83 +16,25 @@ namespace BlazorAdmin.Services.OrderDetailsServices;
 
 public class OrderDetailsService : IOrderDetailsService
 {
-    private readonly HttpService _httpService;
     private readonly IRepository<Order> _orderRepository; 
 
-    public OrderDetailsService(
-        HttpService httpService,
-        IRepository<Order> orderRepository)
+    public OrderDetailsService(IRepository<Order> orderRepository)
     {
-        _httpService = httpService;
         _orderRepository = orderRepository;
-    }
-
-
-
-
-    public async Task<OrderDetails> GetByOrderIdAsync(int orderId) 
-    {
-        var getOrderTask= _orderRepository.GetByIdAsync(orderId);
-        
-        await Task.WhenAll(getOrderTask);
-        
-         OrderDetails orderDetails = new OrderDetails
-        {
-            OrderId = orderId,
-            BuyerId = getOrderTask.Result.BuyerId,
-            Address =
-            $"{getOrderTask.Result.ShipToAddress.Street} " +
-            $"{getOrderTask.Result.ShipToAddress.City} " +
-            $"{getOrderTask.Result.ShipToAddress.State} " +
-            $"{getOrderTask.Result.ShipToAddress.Country} " +
-            $"{getOrderTask.Result.ShipToAddress.ZipCode}",
-            OrderDate = getOrderTask.Result.OrderDate,
-            Items = getOrderTask.Result.OrderItems.ToList(),
-            Status = 0,
-            TotalPrice = getOrderTask.Result.Total()
-        };
-        
-        return orderDetails;
-    }
-
-    //
-    public async Task<OrderDetails> Create(CreateOrderDetailsRequest orderDetails)
-    {
-        var response = await _httpService.HttpPost<CreateOrderDetailsResponse>("order-details", orderDetails);
-        return response?.OrderDetails;
-    }
-
-
-    public async Task<string> Delete(int id)
-    {
-        return (await _httpService.HttpDelete<DeleteOrderDetailsResponse>("order-details", id)).Status;
-    }
-
-    public async Task<OrderDetails> Edit(OrderDetails orderDetails)
-    {
-        return (await _httpService.HttpPut<EditOrderDetailsResult>("order-details", orderDetails)).OrderDetails;
-    }
-
-    public async Task<OrderDetails> GetById(int id)
-    {
-        var detailGetTask = _httpService.HttpGet<EditOrderDetailsResult>($"order-details/{id}");
-        await Task.WhenAll(detailGetTask);
-        var response = detailGetTask?.Result.OrderDetails;
-        return response;
     }
 
     public async Task<List<OrderDetails>> List()
     {
-        var orders = (await _orderRepository.ListAsync()).OrderBy(x=>x.Id);
+        var orders = (await _orderRepository.ListAsync()).OrderBy(x => x.Id);
 
         List<OrderDetails> orderDetails = new List<OrderDetails>();
-        foreach (var order in orders)   
+        foreach (var order in orders)
         {
             orderDetails.Add(new OrderDetails
             {
                 OrderId = order.Id,
                 BuyerId = order.BuyerId,
-                Address = 
+                Address =
                     $"{order.ShipToAddress.Street} " +
                     $"{order.ShipToAddress.City} " +
                     $"{order.ShipToAddress.State} " +
@@ -104,7 +46,7 @@ public class OrderDetailsService : IOrderDetailsService
                 TotalPrice = order.Total()
             });
         }
-        
+
         return orderDetails;
     }
 
@@ -125,14 +67,5 @@ public class OrderDetailsService : IOrderDetailsService
         }
 
         return orderDetails.ToList();
-    }
-
-    public async Task<List<OrderDetails>> ListPaged(int pageSize)
-    {
-        var detailsListTask = _httpService.HttpGet<PagedOrderDetailsResponse>($"order-details?PageSize=10");
-        await Task.WhenAll(detailsListTask);
-
-        var details = detailsListTask.Result.OrderDetails;
-        return details;
     }
 }
