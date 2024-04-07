@@ -1,36 +1,70 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using BlazorAdmin.Helpers;
-using BlazorAdmin.Services.OrderDetailsServices;
+using BlazorShared.Interfaces;
 using BlazorShared.Models.OrderDetailsModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
-using Microsoft.eShopWeb.ApplicationCore.Services;
 
 namespace BlazorAdmin.Pages.OrdersPage;
 
-partial class Details:BlazorComponent
+partial class Details : BlazorComponent
 {
-    [Parameter]
-    public int orderId { get; set; }
-
     [Inject]
-    public OrderDetailsService OrderDetailsService { get; set; }
+    public IOrderDetailsService OrderDetailsService { get; set; }
     [Inject]
     public IOrderService OrderService{ get; set; }
+    
+    [Parameter]
+    public int OrderId { get; set; }
+    private List<OrderDetailsModel> OrderItems { get; set; } = new List<OrderDetailsModel>();
 
-    private List<OrderDetailsModel> OrderItems { get; set; }
+    //protected override void OnInitialized()
+    //{
+    //    if (orderId == 1)
+    //    {
+    //        var odmList = new List<OrderDetailsModel>
+    //        {
+    //            new OrderDetailsModel
+    //              {
+    //                CatalogItemOrdered = new Microsoft.eShopWeb.ApplicationCore.Entities.OrderAggregate
+    //                .CatalogItemOrdered(orderId = 1, "Abc", "/images/products/3.png"),
+    //                UnitPrice = 15,
+    //                Units = 2
+    //              }
+    //        };
+    //        OrderItems = odmList;
+    //    }
+    //    base.OnInitialized();
+    //}
 
     protected override async Task OnInitializedAsync()
     {
-        OrderItems = await OrderDetailsService.ListDetails(orderId);
+
+       
+        var odmList = new List<OrderDetailsModel>
+                    {
+                        new OrderDetailsModel
+                          {
+                            CatalogItemOrdered = new Microsoft.eShopWeb.ApplicationCore.Entities.OrderAggregate
+                            .CatalogItemOrdered(1, "Abc", "/images/products/3.png"),
+                            UnitPrice = 15,
+                            Units = 2
+                          }
+                    };
+        OrderItems = odmList;
+        
+        await Task.CompletedTask;
+        await OrderDetailsService.ListDetails(OrderId);
+
     }
 
     public async Task ApproveOrder()
     {
-        // Sipariş durumunu approve olarak değiştirmek için servise istek gönder
-        await OrderService.SetOrderStatus(orderId,1);
-        // İşlem tamamlandıktan sonra gerekli işlemleri yapabilirsiniz, örneğin bir mesaj gösterebilirsiniz
+
+        //// Sipariş durumunu approve olarak değiştirmek için servise istek gönder
+        await OrderService.SetOrderStatus(OrderId, 1);
+        //// İşlem tamamlandıktan sonra gerekli işlemleri yapabilirsiniz, örneğin bir mesaj gösterebilirsiniz
         // MessageBox.Show("Sipariş onaylandı!");
     }
 

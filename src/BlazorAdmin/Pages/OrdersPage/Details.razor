@@ -1,4 +1,4 @@
-﻿@page "/order-details/{orderId}"
+﻿@page "/admin/orderdetails/{OrderId:int}"
 
 @attribute [Authorize(Roles = BlazorShared.Authorization.Constants.Roles.ADMINISTRATORS)]
 @inherits BlazorAdmin.Helpers.BlazorComponent
@@ -8,10 +8,10 @@
 @namespace BlazorAdmin.Pages.OrdersPage
 <h3>Order Details</h3>
 
-<table class="table">
+ <table class="table">
     <thead>
         <tr>
-            <th>Product</th>
+            <th>Product</th> 
             <th>Product Name</th>
             <th>Units</th>
             <th>Unit Price</th>
@@ -22,19 +22,15 @@
         @foreach (var item in OrderItems)
         {
             <tr>
-                <td><img src="@item.CatalogItemOrderedPicUri" alt="@item.CatalogItemOrderedName" /></td>
-                <td>@item.CatalogItemOrderedName</td>
-                <td>@item.Units</td>
+                <td><img src="@item.CatalogItemOrderedPicUri" alt="@item.CatalogItemOrderedName" /></td> 
+                <td>@item.CatalogItemOrderedName</td> 
+                <td>@item.Units</td> 
                 <td>@item.UnitPrice</td>
-                <td>@item.TotalPrice</td>
+                <td>@item.TotalPrice</td> 
             </tr>
         }
     </tbody>
-</table>
+</table> 
 
 <button class="btn btn-primary" @onclick="ApproveOrder">Approve Order</button>
 
-
-@code {
-
-}

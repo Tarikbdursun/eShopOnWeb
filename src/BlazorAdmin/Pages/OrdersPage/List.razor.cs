@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using BlazorAdmin.Helpers;
 using BlazorAdmin.Services;
@@ -7,61 +8,38 @@ using BlazorShared.Interfaces;
 using BlazorShared.Models;
 using BlazorShared.Models.OrderDetailsModels;
 using Microsoft.AspNetCore.Components;
+using Microsoft.eShopWeb.ApplicationCore.Entities.OrderAggregate;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
+using Microsoft.eShopWeb.Infrastructure.Data;
 
 namespace BlazorAdmin.Pages.OrdersPage;
 
 public partial class List : BlazorComponent
 {
-    //[Microsoft.AspNetCore.Components.Inject]
+    //[Inject]
     //public IOrderDetailsService OrderDetailsService { get; set; }
-    [Inject]
-    private IOrderDetailsService OrderDetailsService { get; set; }
-
-   
-
-    //private readonly IOrderDetailsService _orderDetailsService;
-
-    //[Microsoft.AspNetCore.Components.Inject]
-    //public IOrderDetailsService OrderDetailsService { get; set; }
-
-    //public List(IOrderDetailsService orderDetailsService)
-    //{
-    //    _orderDetailsService = orderDetailsService;
-    //}
 
     private List<OrderDetails> orderDetails;
 
     protected override async Task OnInitializedAsync()
     {
-        orderDetails = await OrderDetailsService.List();//await _orderDetailsService.List(); 
+        //OrderDetailsService = new OrderDetailsService(new EfRepository<Order>(new CatalogContext(new Microsoft.EntityFrameworkCore.DbContextOptions<CatalogContext>())));
+        List<OrderDetails> orderDetails = new List<OrderDetails>();
+
+        var od = new OrderDetails
+        {
+            Address = "assaff",
+            BuyerId = "1223",
+            Items = null,
+            OrderDate = DateTime.Now,
+            OrderId = 1,
+            TotalPrice = 10,
+            Status = 0
+        };
+
+        orderDetails.Add(od);
+
+
+        this.orderDetails = orderDetails;//await OrderDetailsService.List();
     }
-
-
-    private async Task ListClick()
-    {
-        //orderDetails = await _orderDetailsService.List();
-    }
-    ////Maybe we need it 
-    //[Microsoft.AspNetCore.Components.Inject]
-    //public IOrderService OrderService { get; set; }
-
-    //private List<OrderDetails> orderDetails = new List<OrderDetails>();
-
-    //protected override async Task OnAfterRenderAsync(bool firstRender)
-    //{
-    //    if (firstRender)
-    //    {
-    //        orderDetails = await OrderDetailsService.List();
-    //        CallRequestRefresh();
-    //    }
-
-    //    await base.OnAfterRenderAsync(firstRender);
-    //}
-
-
-    //private async void DetailsClick(int id)
-    //{
-    //    await DetailsComponent.Open(id);
-    //}
 }

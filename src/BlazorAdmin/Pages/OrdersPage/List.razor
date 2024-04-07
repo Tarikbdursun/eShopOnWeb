@@ -15,22 +15,25 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Buyer Name</th>
+               @*  <th>Buyer Name</th> *@
                 <th>Address</th>
                 <th>Date</th>
-                <th>Status</th>
-                <th>Products</th>
+                <th>Status</th> 
+                @* <th>Products</th> *@
             </tr>
         </thead>
         <tbody>
             @foreach (var orderDetail in orderDetails)
             {
                 <tr>
-                    @* <td>@orderDetail.BuyerName</td> *@
-                    <td>@orderDetail.Address</td>
-                    <td>@orderDetail.OrderDate</td>
+                     @* <td>@orderDetail.BuyerName</td> *@
+                     <td>@orderDetail.Address</td>
+                     <td>@orderDetail.OrderDate</td>
                     <td>@orderDetail.Status</td>
                     <td>
+                        <a href="/admin/orderdetails/@orderDetail.OrderId">Order Details</a>
+                    </td>
+                    @*<td>
                         <ul>
                             @foreach (var product in orderDetail.Items)
                             {
@@ -40,7 +43,7 @@
                         <a href="/order-details/@orderDetail.OrderId">Order Details</a>
                     </td>
                         </ul>
-                    </td>
+                    </td>  *@
                 </tr>
             }
         </tbody>
