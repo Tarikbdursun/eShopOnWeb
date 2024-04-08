@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using BlazorShared.Models;
 using BlazorShared.Models.OrderDetailsModels;
-using Microsoft.eShopWeb.ApplicationCore.Entities.OrderAggregate;
 
 namespace BlazorShared.Interfaces;
 public interface IOrderDetailsService
@@ -15,6 +10,9 @@ public interface IOrderDetailsService
     //Task<string> Delete(int id);
     //Task<OrderDetails> GetById(int id);
     //Task<List<OrderDetails>> ListPaged(int pageSize);
-    Task<List<OrderDetails>> List();
-    Task<List<OrderDetailsModel>> ListDetails(int orderId);
+
+
+    Task<List<Order>> List();
+    Task<List<OrderDetails>> ListDetails(int orderId);
+    Task SetOrderStatus(int orderId, short status);
 }

@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace BlazorShared.Models.OrderDetailsModels;
-public  class PagedOrderDetailsResponse
+
+public class PagedOrderDetailsResponse
 {
-    public List<OrderDetails> OrderDetails { get; set; } = new List<OrderDetails>();
+    public List<OrderDetails> OrderDetailsList { get; set; } = new();
     public int PageCount { get; set; } = 0;
 }

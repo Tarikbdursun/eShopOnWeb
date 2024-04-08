@@ -7,5 +7,5 @@ using System.Threading.Tasks;
 namespace BlazorShared.Models.OrderDetailsModels;
 public class CreateOrderDetailsResponse
 {
-    public OrderDetails OrderDetails { get; set; } = new OrderDetails();
+    public Order OrderDetails { get; set; } = new Order();
 }

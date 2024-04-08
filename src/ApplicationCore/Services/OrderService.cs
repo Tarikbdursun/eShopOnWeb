@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
@@ -52,9 +53,19 @@ public class OrderService : IOrderService
         await _orderRepository.AddAsync(order);
     }
 
+    public async Task<List<Order>> List() 
+    {
+        return await _orderRepository.ListAsync();    
+    }
+
     public async Task SetOrderStatus(int orderId,short status) 
     {
-        var getOrderTask = await _orderRepository.GetByIdAsync(orderId);
-        getOrderTask.Status = (OrderStatus)status;
+        
+        var order = await _orderRepository.GetByIdAsync(orderId);
+        Guard.Against.Null(order, nameof(order));
+
+        order.Status = (OrderStatus)status;
+
+        await _orderRepository.UpdateAsync(order);
     }
 }

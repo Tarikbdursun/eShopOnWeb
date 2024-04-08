@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 using Microsoft.eShopWeb.Web.Features.MyOrders;
 using Microsoft.eShopWeb.Web.Features.OrderDetails;
 
@@ -13,10 +14,12 @@ namespace Microsoft.eShopWeb.Web.Controllers;
 public class OrderController : Controller
 {
     private readonly IMediator _mediator;
+    private readonly IOrderService _orderService;
 
-    public OrderController(IMediator mediator)
+    public OrderController(IMediator mediator, IOrderService orderService)
     {
         _mediator = mediator;
+        _orderService = orderService;
     }
 
     [HttpGet]
@@ -41,4 +44,6 @@ public class OrderController : Controller
 
         return View(viewModel);
     }
+
+
 }

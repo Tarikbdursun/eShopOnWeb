@@ -1,36 +1,55 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using BlazorShared.Interfaces;
-using BlazorShared.Models;
 using BlazorShared.Models.OrderDetailsModels;
-using Microsoft.eShopWeb.ApplicationCore.Entities.BuyerAggregate;
-using Microsoft.eShopWeb.ApplicationCore.Entities.OrderAggregate;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
-using Microsoft.eShopWeb.ApplicationCore.Services;
-using Microsoft.Extensions.Logging;
 
 namespace BlazorAdmin.Services.OrderDetailsServices;
 
 public class OrderDetailsService : IOrderDetailsService
 {
-    private readonly IRepository<Order> _orderRepository; 
+    private readonly HttpService _httpService;
+    private readonly IOrderService _orderService;
 
-    public OrderDetailsService(IRepository<Order> orderRepository)
+    public OrderDetailsService(HttpService httpService, IOrderService orderService)
     {
-        _orderRepository = orderRepository;
+        _httpService = httpService;
+        _orderService = orderService;
     }
 
-    public async Task<List<OrderDetails>> List()
+    public async Task<List<Order>> List()
     {
-        var orders = (await _orderRepository.ListAsync()).OrderBy(x => x.Id);
+        //List<Order> list;
+        //var task=await _httpService.HttpGet<List<Order>>("orders");
+        //if (task.Count==0) 
+        //{
+        //    list = new List<Order>
+        //    {
+        //        new Order
+        //        {
+        //            Address="Ankara Yenimahalle",
+        //            BuyerId="1",
+        //            Items=new List<Microsoft.eShopWeb.ApplicationCore.Entities.OrderAggregate.OrderItem>(),
+        //            OrderDate=DateTime.Today,
+        //            OrderId=1,
+        //            Status=0,
+        //            TotalPrice=90
+        //        }
+        //    };
 
-        List<OrderDetails> orderDetails = new List<OrderDetails>();
+        //    return list;
+        //}
+        //return task;
+
+        var orders = await _orderService.List();
+        List<Order> orderModels = new();
+
         foreach (var order in orders)
         {
-            orderDetails.Add(new OrderDetails
+            orderModels.Add(new Order
+
             {
                 OrderId = order.Id,
                 BuyerId = order.BuyerId,
@@ -47,25 +66,30 @@ public class OrderDetailsService : IOrderDetailsService
             });
         }
 
-        return orderDetails;
+        return orderModels;
     }
 
-    public async Task<List<OrderDetailsModel>> ListDetails(int orderId) 
+    public async Task<List<OrderDetails>> ListDetails(int orderId)
     {
-        var itemOrders = (await _orderRepository.GetByIdAsync(orderId)).OrderItems;
-        
-
-        List<OrderDetailsModel> orderDetails = new List<OrderDetailsModel>();
-        foreach (var item in itemOrders)
+        var listOrderTask= await _httpService.HttpGet<List<Order>>("orders");
+        var order=listOrderTask.FirstOrDefault(x => x.OrderId == orderId);
+        var itemOrders = order.Items;
+        var orderDetails = new List<OrderDetails>();
+        foreach (var item in itemOrders) 
         {
-            orderDetails.Add(new OrderDetailsModel
+            orderDetails.Add(new OrderDetails
             {
-                CatalogItemOrdered=item.ItemOrdered,
-                UnitPrice=item.UnitPrice,
-                Units=item.Units,
+                CatalogItemOrdered = item.ItemOrdered,
+                UnitPrice = item.UnitPrice,
+                Units = item.Units,
             });
         }
 
-        return orderDetails.ToList();
+        return orderDetails;
+    }
+
+    public async Task SetOrderStatus(int orderId, short status)
+    {
+        await _httpService.HttpPut<object>($"set-order-status/{orderId}?status={status}", null);
     }
 }
