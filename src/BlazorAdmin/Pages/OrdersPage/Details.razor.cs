@@ -20,21 +20,6 @@ partial class Details : BlazorComponent
 
     protected override async Task OnInitializedAsync()
     {
-
-       
-        //var odmList = new List<OrderDetails>
-        //            {
-        //                new OrderDetails
-        //                  {
-        //                    CatalogItemOrdered = new Microsoft.eShopWeb.ApplicationCore.Entities.OrderAggregate
-        //                    .CatalogItemOrdered(1, "Abc", "/images/products/3.png"),
-        //                    UnitPrice = 15,
-        //                    Units = 2
-        //                  }
-        //            };
-        //orderItems = odmList;
-        
-        //await Task.CompletedTask;
         orderItems = await OrderDetailsService.ListDetails(OrderId);
     }
 
