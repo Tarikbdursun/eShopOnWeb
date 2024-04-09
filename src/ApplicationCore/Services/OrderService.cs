@@ -47,7 +47,7 @@ public class OrderService : IOrderService
             var orderItem = new OrderItem(itemOrdered, basketItem.UnitPrice, basketItem.Quantity);
             return orderItem;
         }).ToList();
-        
+
         var order = new Order(basket.BuyerId, shippingAddress, items);
 
         await _orderRepository.AddAsync(order);
@@ -55,12 +55,11 @@ public class OrderService : IOrderService
 
     public async Task<List<Order>> List() 
     {
-        return await _orderRepository.ListAsync();    
+        return await _orderRepository.ListAsync();
     }
 
     public async Task SetOrderStatus(int orderId,short status) 
     {
-        
         var order = await _orderRepository.GetByIdAsync(orderId);
         Guard.Against.Null(order, nameof(order));
 
